@@ -20,7 +20,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* video har screen par fit hoga */
+      object-fit: cover;
     }
 
     .overlay-btn {
@@ -28,7 +28,7 @@
       bottom: 20px;
       right: 20px;
       padding: 15px 25px;
-      background: rgba(37, 211, 102, 0.9); /* WhatsApp green */
+      background: rgba(37, 211, 102, 0.9);
       color: white;
       font-size: 18px;
       font-weight: bold;
@@ -52,7 +52,7 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.4); /* transparent black */
+      background: rgba(0,0,0,0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -62,7 +62,8 @@
       color: white;
       border: none;
       outline: none;
-      display: none; /* hidden by default */
+      display: none; /* hidden default */
+      transition: opacity 0.5s ease;
     }
   </style>
 </head>
@@ -83,6 +84,7 @@
   <script>
     var video = document.getElementById('bg-video');
     var playBtn = document.getElementById('play-btn');
+    var hideTimeout;
 
     if (Hls.isSupported()) {
       var hls = new Hls();
@@ -100,13 +102,7 @@
       playBtn.style.display = "flex"; // show button if autoplay failed
     });
 
-    // Play event → hide button & change icon to pause
-    video.addEventListener('play', () => {
-      playBtn.style.display = "flex";
-      playBtn.innerHTML = "❚❚";
-    });
-
-    // Pause/End event → show button with play icon
+    // Always show button if paused or ended
     video.addEventListener('pause', () => {
       playBtn.style.display = "flex";
       playBtn.innerHTML = "▶";
@@ -117,10 +113,28 @@
       playBtn.innerHTML = "▶";
     });
 
-    // Toggle play/pause when button clicked
-    playBtn.addEventListener('click', () => {
+    // When playing, hide button after small delay
+    video.addEventListener('play', () => {
+      playBtn.innerHTML = "❚❚"; // pause icon
+      playBtn.style.display = "none"; // hide during play
+    });
+
+    // User tap → show button temporarily
+    document.body.addEventListener('click', () => {
+      if (!video.paused && !video.ended) {
+        playBtn.style.display = "flex";
+        clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => {
+          playBtn.style.display = "none";
+        }, 3000); // hide after 3 seconds
+      }
+    });
+
+    // Toggle play/pause on button click
+    playBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // prevent body click event
       if (video.paused || video.ended) {
-        video.muted = false; // unmute on user interaction
+        video.muted = false; // unmute on interaction
         video.play();
       } else {
         video.pause();
