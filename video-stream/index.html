@@ -52,7 +52,7 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.4);
+      background: rgba(0,0,0,0.4); /* transparent black */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -92,18 +92,24 @@
       video.src = 'playlist.m3u8';
     }
 
-    // Autoplay with sound (may be blocked in some browsers)
+    // Try autoplay with sound
     video.muted = false;
     video.play().catch(() => {
-      console.log("Autoplay with sound blocked, playing muted.");
+      console.log("Autoplay with sound blocked. Showing play button.");
       video.muted = true;
-      video.play();
+      playBtn.style.display = "flex"; // show button if autoplay failed
     });
 
-    // Show button when video is paused or ended
+    // Play event → hide button & change icon to pause
+    video.addEventListener('play', () => {
+      playBtn.style.display = "flex";
+      playBtn.innerHTML = "❚❚";
+    });
+
+    // Pause/End event → show button with play icon
     video.addEventListener('pause', () => {
       playBtn.style.display = "flex";
-      playBtn.innerHTML = "▶"; // play icon
+      playBtn.innerHTML = "▶";
     });
 
     video.addEventListener('ended', () => {
@@ -111,15 +117,14 @@
       playBtn.innerHTML = "▶";
     });
 
-    // Hide button when playing
-    video.addEventListener('play', () => {
-      playBtn.style.display = "none";
-    });
-
-    // Button click: resume video with sound
+    // Toggle play/pause when button clicked
     playBtn.addEventListener('click', () => {
-      video.muted = false;
-      video.play();
+      if (video.paused || video.ended) {
+        video.muted = false; // unmute on user interaction
+        video.play();
+      } else {
+        video.pause();
+      }
     });
   </script>
 </body>
