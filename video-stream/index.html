@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>info</title>
+  <title>Video Stream</title>
   <style>
     body, html {
       margin: 0;
@@ -23,6 +23,7 @@
       object-fit: cover;
     }
 
+    /* WhatsApp Button */
     .overlay-btn {
       position: absolute;
       bottom: 20px;
@@ -73,35 +74,10 @@
   <!-- Center Overlay Icon -->
   <div id="center-icon" class="center-icon">▶</div>
 
-  <!-- WhatsApp Button -->
- <a id="whatsapp-btn" href="#" class="overlay-btn">
-   Join My WhatsApp Channel
-</a>
-
-
-<script>
-  const whatsappBtn = document.getElementById('whatsapp-btn');
-
-  whatsappBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-
-    // Deep link (App)
-    const appLink = "whatsapp://channel/0029VbAoq9p59PwSFPQjh11l";
-    // Fallback (Browser)
-    const webLink = "https://whatsapp.com/channel/0029VbAoq9p59PwSFPQjh11l";
-
-    // Try opening app
-    window.location.href = appLink;
-
-    // Agar app open nahi hua to 2s baad browser
-    setTimeout(() => {
-      window.location.href = webLink;
-    }, 2000);
-  });
-</script>
-
-
-
+  <!-- WhatsApp Channel Button -->
+  <a id="whatsapp-btn" href="#" class="overlay-btn">
+    Join My WhatsApp Channel
+  </a>
 
   <!-- HLS -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -110,6 +86,7 @@
     const centerIcon = document.getElementById('center-icon');
     const whatsappBtn = document.getElementById('whatsapp-btn');
 
+    // Load HLS video
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource('playlist.m3u8'); // tumhari m3u8 file ka path
@@ -151,31 +128,24 @@
     setTimeout(() => {
       whatsappBtn.classList.add("show");
     }, 10000);
+
+    // WhatsApp button deep link + fallback
+    whatsappBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      // Deep link (App)
+      const appLink = "whatsapp://channel/0029VbAoq9p59PwSFPQjh11l";
+      // Fallback (Browser)
+      const webLink = "https://whatsapp.com/channel/0029VbAoq9p59PwSFPQjh11l";
+
+      // Try opening app
+      window.location.href = appLink;
+
+      // Agar app open nahi hua to 2s baad browser
+      setTimeout(() => {
+        window.location.href = webLink;
+      }, 2000);
+    });
   </script>
-
-
-<script>
-  const whatsappBtn = document.getElementById('whatsapp-btn');
-
-  whatsappBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-
-    // Deep link (App)
-    const appLink = "whatsapp://channel/0029VbAoq9p59PwSFPQjh11l";
-    // Fallback (Browser)
-    const webLink = "https://whatsapp.com/channel/0029VbAoq9p59PwSFPQjh11l";
-
-    // Try opening app
-    window.location.href = appLink;
-
-    // Agar app open nahi hua to 2s baad browser
-    setTimeout(() => {
-      window.location.href = webLink;
-    }, 2000);
-  });
-</script>
 </body>
 </html>
-
-
-
