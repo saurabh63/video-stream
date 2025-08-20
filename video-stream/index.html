@@ -1,24 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My HLS Video</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Stream</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background: black;
+      overflow: hidden;
+    }
+
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* video har screen par fit hoga */
+    }
+
+    .overlay-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background: rgba(37, 211, 102, 0.9); /* WhatsApp green */
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transition: background 0.3s ease;
+    }
+
+    .overlay-btn:hover {
+      background: rgba(30, 180, 85, 1);
+    }
+  </style>
 </head>
 <body>
-  <h2>My Video Streaming</h2>
-  <video id="video" width="640" height="360" controls autoplay></video>
+  <!-- Video -->
+  <video id="bg-video" autoplay muted playsinline></video>
 
-  <!-- hls.js library -->
+  <!-- Custom WhatsApp Button -->
+  <a href="https://chat.whatsapp.com/YOUR_GROUP_LINK" target="_blank" class="overlay-btn">
+    Join WhatsApp Group
+  </a>
+
+  <!-- HLS Script -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
-    var video = document.getElementById('video');
+    var video = document.getElementById('bg-video');
+
     if (Hls.isSupported()) {
       var hls = new Hls();
-      hls.loadSource('playlist.m3u8');
+      hls.loadSource('playlist.m3u8'); // tumhari m3u8 file ka path
       hls.attachMedia(video);
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = 'playlist.m3u8';
     }
+
+    // Autoplay with sound (user interaction ki wajah se restriction ho sakta hai)
+    video.muted = false;
+    video.play().catch(() => {
+      console.log("Autoplay with sound blocked, playing muted.");
+      video.muted = true;
+      video.play();
+    });
   </script>
 </body>
 </html>
