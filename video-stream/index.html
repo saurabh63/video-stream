@@ -36,16 +36,42 @@
       text-decoration: none;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
       transition: background 0.3s ease;
+      z-index: 10;
     }
 
     .overlay-btn:hover {
       background: rgba(30, 180, 85, 1);
+    }
+
+    /* Center Play/Pause Button */
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      font-size: 40px;
+      color: white;
+      border: none;
+      outline: none;
+      display: none; /* hidden by default */
     }
   </style>
 </head>
 <body>
   <!-- Video -->
   <video id="bg-video" autoplay muted playsinline></video>
+
+  <!-- Center Play/Pause Button -->
+  <button id="play-btn" class="play-btn">▶</button>
 
   <!-- Custom WhatsApp Button -->
   <a href="https://chat.whatsapp.com/YOUR_GROUP_LINK" target="_blank" class="overlay-btn">
@@ -56,6 +82,7 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
     var video = document.getElementById('bg-video');
+    var playBtn = document.getElementById('play-btn');
 
     if (Hls.isSupported()) {
       var hls = new Hls();
@@ -65,11 +92,33 @@
       video.src = 'playlist.m3u8';
     }
 
-    // Autoplay with sound (user interaction ki wajah se restriction ho sakta hai)
+    // Autoplay with sound (may be blocked in some browsers)
     video.muted = false;
     video.play().catch(() => {
       console.log("Autoplay with sound blocked, playing muted.");
       video.muted = true;
+      video.play();
+    });
+
+    // Show button when video is paused or ended
+    video.addEventListener('pause', () => {
+      playBtn.style.display = "flex";
+      playBtn.innerHTML = "▶"; // play icon
+    });
+
+    video.addEventListener('ended', () => {
+      playBtn.style.display = "flex";
+      playBtn.innerHTML = "▶";
+    });
+
+    // Hide button when playing
+    video.addEventListener('play', () => {
+      playBtn.style.display = "none";
+    });
+
+    // Button click: resume video with sound
+    playBtn.addEventListener('click', () => {
+      video.muted = false;
       video.play();
     });
   </script>
